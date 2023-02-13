@@ -1,3 +1,2 @@
 testing
-editing in the browser
-test
+editing
