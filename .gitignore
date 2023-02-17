@@ -1,0 +1,3 @@
+dev/.terraform/
+prod/.terraform/
+.DS_Store
