@@ -1,3 +1,5 @@
 dev/.terraform/
 prod/.terraform/
+modules/vpc/.terraform
+modules/rds/.terraform
 .DS_Store
