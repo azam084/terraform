@@ -1,6 +1,5 @@
 module "myrds" {
   source = "../modules/rds"
-
   mydb_name = "DBMYSQL"
   mydb_ic = "db.t3.micro"
   #rds_instance_count = "1"

@@ -15,3 +15,5 @@ variable "rds_instance_count" {
     default = []
 
 }
+
+variable "vpc_id" {}
