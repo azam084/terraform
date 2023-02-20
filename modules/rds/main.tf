@@ -1,9 +1,9 @@
-resource "aws_db_subnet_group" "aws_db_access" {
+  resource "aws_db_subnet_group" "aws_db_access" {
   count = var.rds_instance_count
 
   name        = "rds"
   description = "rds"
-  subnet_ids  = "[sub-i25]"
+  subnet_ids  = "[subnet-0def2419710bdfe5c]"
 }
 
 resource "aws_db_instance" "myrds" {

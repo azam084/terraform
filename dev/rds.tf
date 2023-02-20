@@ -3,7 +3,7 @@ module "myrds" {
 
   mydb_name = "DBMYSQL"
   mydb_ic = "db.t3.micro"
-  vpc_id = var.vpc_i
+  #rds_instance_count = "1"
 }
 
 

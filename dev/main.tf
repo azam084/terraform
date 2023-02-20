@@ -22,13 +22,3 @@ module "vpc" {
     egress_cidr_blocks = "0.0.0.0/0"
     ingress_cidr_blocks = "0.0.0.0/0"
 }   
-
-
-
-#module "security_groups" {
-#     source                          = "../modules/security_groups"
-#     ingress_cidr_blocks             = var.ingress_cidr_blocks
-#     egress_cidr_blocks              = var.egress_cidr_blocks
-#     sg_name                         = var.sg_name
-#     #vpc_id                          = var.vpc_id
-# }

@@ -10,4 +10,8 @@ variable "mydb_ic" {
 #          type = set(string)
 #          default = []
 # }
-variable "vpc_id" {}
+variable "rds_instance_count" {
+    type = set(string)
+    default = []
+
+}

@@ -11,4 +11,3 @@ variable "private_data_subnet_az2_cidr" {}
 variable "ingress_cidr_blocks" {}
 variable "egress_cidr_blocks" {}
 variable "sg_name" {}
-#variable "vpc_id" {}
