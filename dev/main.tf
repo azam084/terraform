@@ -18,7 +18,14 @@ module "vpc" {
     private_app_subnet_az2_cidr     = var.private_app_subnet_az2_cidr
     private_data_subnet_az1_cidr    = var.private_data_subnet_az1_cidr
     private_data_subnet_az2_cidr    = var.private_data_subnet_az2_cidr
-    sg_name = "EC2_SG"
-    egress_cidr_blocks = "0.0.0.0/0"
-    ingress_cidr_blocks = "0.0.0.0/0"
+    sg_name                         = var.sg_name
+    egress_cidr_blocks              = var.egress_cidr_blocks
+    ingress_cidr_blocks             = var.ingress_cidr_blocks
+    #vpc_id = module.vpc.aws_vpc.vpc.id
 }   
+module "rds" {
+  source = "../modules/rds"
+  db_engine = var.db_engine
+  db_engine_version = var.db_engine_version
+    
+  }

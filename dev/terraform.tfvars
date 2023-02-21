@@ -12,3 +12,9 @@ private_data_subnet_az2_cidr="10.0.5.0/24"
 ingress_cidr_blocks="0.0.0.0/0"
 egress_cidr_blocks="0.0.0.0/0"
 sg_name="EC2_SECURITY_GROUP"
+
+
+# RDS Values
+
+db_engine="mysql"
+db_engine_version="5.7"

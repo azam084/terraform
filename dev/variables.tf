@@ -12,3 +12,30 @@ variable "ingress_cidr_blocks" {}
 variable "egress_cidr_blocks" {}
 variable "sg_name" {}
 
+
+# Below variable are for RDS
+
+variable "mydb_name" {
+    type = string
+    default = ""
+}
+variable "mydb_ic" {
+        type = string
+        default = ""
+}
+
+variable "rds_instance_count" {
+    type = set(string)
+    default = []
+
+}
+
+#variable "vpc_id" {}
+variable "allocated_storage" {
+    type = number
+    default = "10"
+
+}
+
+variable "db_engine" {}
+variable "db_engine_version" {}
