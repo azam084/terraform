@@ -16,24 +16,24 @@ variable "sg_name" {}
 # Below variable are for RDS
 
 variable "mydb_name" {
-    type = string
-    default = ""
+  type    = string
+  default = ""
 }
 variable "mydb_ic" {
-        type = string
-        default = ""
+  type    = string
+  default = ""
 }
 
 variable "rds_instance_count" {
-    type = set(string)
-    default = []
+  type    = set(string)
+  default = []
 
 }
 
 #variable "vpc_id" {}
 variable "allocated_storage" {
-    type = number
-    default = "10"
+  type    = number
+  default = "10"
 
 }
 
