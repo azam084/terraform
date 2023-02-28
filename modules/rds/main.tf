@@ -1,18 +1,19 @@
 
-# data "aws_vpc" "selected" {
-#  id = module.vpc.aws_vpc.vpc.id
-# }
+data "aws_subnet" "my_subnet_list" {
+ tags = {
+    Name = "DEV_ENV"
+  }
+}
 
-# # create a DB subnet group
-# resource "aws_db_subnet_group" "vpc_subnet_id_group" {
-#   depends_on = [data.aws_vpc.selected.id]
-#   #subnet_ids               = ["${module.vpc.private_data_subnet_az1.id}"]
-#   subnet_ids              = ["private_data_subnet_az1_id", "private_data_subnet_az2_id"]
+# Create the DB subnet group 
+resource "aws_db_subnet_group" "my_subnet_group"{
+  subnet_ids = data.aws_subnet.my_subnet_list.ids
 
-#   tags = {
-#     Name    = "${var.project_name}-SUBNET-GID"
-#   }
-# }
+  tags = {
+    Name = "${var.project_name}-Subnet Group"
+  }
+}
+
 
 # create RDS 
 resource "aws_db_instance" "myrds" {
@@ -24,5 +25,8 @@ resource "aws_db_instance" "myrds" {
   username              = "foo"
   password              = "foobarbaz"
   skip_final_snapshot   = false
-  db_subnet_group_name  = module.vpc.my_subnet_group
+  db_subnet_group_name  = aws_db_subnet_group.my_subnet_group.id
+  # vpc_security_group_ids = [aws_security_group.db.id]
 }
+
+

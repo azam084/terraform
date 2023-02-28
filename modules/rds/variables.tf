@@ -23,4 +23,3 @@ variable "mydb_ic" {
         type = string
         default = ""
 }
-
