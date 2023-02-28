@@ -24,16 +24,3 @@ variable "mydb_ic" {
         default = ""
 }
 
-# variable "rds_instance_count" {
-#     type = set(string)
-#     default = []
-
-# }
-
-# DB subnet group varibales
-variable "subnet_ids" {
-    type = set(string)
-    default = []
-}
-
-variable "project_name" {}

@@ -25,8 +25,13 @@ module "vpc" {
 }
 module "rds" {
   source            = "../modules/rds"
-  depends_on        = [module.vpc.private_data_subnet_az1, module.vpc.private_data_subnet_az2]
+  #depends_on        = [module.vpc.private_data_subnet_az1, module.vpc.private_data_subnet_az2]
   db_engine         = var.db_engine
   db_engine_version = var.db_engine_version
-  project_name      = module.vpc.project_name
+  allocated_storage     = var.allocated_storage
+  instance_class        = var.mydb_ic
+  username              = "foo"
+  password              = "foobarbaz"
+  skip_final_snapshot   = false
+  db_subnet_group_name  = module.vpc.my_subnet_group
 }

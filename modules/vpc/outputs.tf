@@ -32,8 +32,13 @@ output "private_data_subnet_az1_id" {
 
 output "private_data_subnet_az2_id" {
   value = aws_subnet.private_data_subnet_az2.id
+  
 }
 
 output "internet_gateway" {
   value = aws_internet_gateway.internet_gateway
+}
+
+output "my_subnet_group" {
+  value = aws_db_subnet_group.my_subnet_group.id
 }

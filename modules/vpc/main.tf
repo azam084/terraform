@@ -118,3 +118,11 @@ resource "aws_subnet" "private_data_subnet_az2" {
     Name    = "private data subnet az2"
   }
 }
+
+resource "aws_db_subnet_group" "my_subnet_group"{
+  subnet_ids = [aws_subnet.private_data_subnet_az1.id, aws_subnet.private_data_subnet_az2.id]
+
+  tags = {
+    Name = "${var.project_name}-Subnet Group"
+  }
+}
