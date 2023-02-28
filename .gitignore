@@ -1,5 +1,5 @@
-dev/.terraform/
-prod/.terraform/
+environments/dev/.terraform/
+environments/prod/.terraform/
 modules/vpc/.terraform
 modules/rds/.terraform
 .DS_Store
