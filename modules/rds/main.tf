@@ -1,15 +1,15 @@
 
 data "aws_subnet" "my_subnet_list" {
  tags = {
-    Name = "private data subnet az2"
+    #Name = "private data subnet"
     Name = "private data subnet az1"
   }
 }
 
 # Create the DB subnet group 
 resource "aws_db_subnet_group" "my_subnet_group"{
+  #subnet_ids = data.aws_subnet.my_subnet_list.id
   subnet_ids = data.aws_subnet.my_subnet_list.*.id
-  #subnet_ids = data.aws_subnet.my_subnet_list.*.id
   #subnet_ids = flatten([data.aws_subnet.my_subnet_list.*.id])
   # tags = {
   #   Name = "${var.project_name}-Subnet Group"
