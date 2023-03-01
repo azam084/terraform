@@ -23,3 +23,8 @@ variable "mydb_ic" {
         type = string
         default = ""
 }
+
+# variable "subnet_ids" {
+#         type = list
+#         default = []
+# }

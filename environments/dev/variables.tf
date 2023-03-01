@@ -27,15 +27,15 @@ variable "sg_name" {}
 #     default = ""
 # }
 
-# variable "db_engine" {
-#     type = string
-#     default = "mysql"
-# }
+variable "db_engine" {
+    type = string
+    default = "mysql"
+}
 
-# variable "db_engine_version" {
-#     type = number
-#     default = "5.7"
-# }
+variable "db_engine_version" {
+    type = number
+    default = "5.7"
+}
 
 # variable "mydb_ic" {
 #         type = string
