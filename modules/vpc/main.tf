@@ -15,6 +15,7 @@ resource "aws_internet_gateway" "internet_gateway" {
 
   tags      = {
     Name    = "${var.project_name}-igw"
+    Environment = "production"
   }
 }
 
@@ -105,6 +106,7 @@ resource "aws_subnet" "private_data_subnet_az1" {
   tags      = {
     Name    = "private data subnet az1"
     sidg    = "RDS_Subnet"
+    Environment = "production"
   }
 }
 
@@ -118,6 +120,7 @@ resource "aws_subnet" "private_data_subnet_az2" {
   tags      = {
     Name    = "private data subnet az2"
     sidg    = "RDS_Subnet"
+    Environment = "production"
   }
 }
 

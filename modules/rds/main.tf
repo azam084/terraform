@@ -1,21 +1,16 @@
+
 data "aws_subnet" "my_subnet_list" {
- tags = {
+  count             = 2
+  availability_zone = "eu-west-1${element(["a", "b"], count.index)}"
+  tags = {
     sidg = "RDS_Subnet"
   }
 }
 
-
-
-# Create the DB subnet group 
 resource "aws_db_subnet_group" "my_subnet_group"{
-  for_each = data.aws_subnet.my_subnet_list.id
-  subnet_ids = each.value
-  #subnet_ids = data.aws_subnet.my_subnet_list.id
-  #subnet_ids = [data.aws_subnet.my_subnet_list]
-  #subnet_ids = flatten([data.aws_subnet.my_subnet_list.*.id])
-  # tags = {
-  #   Name = "${var.project_name}-Subnet Group"
-  # }
+  name        = "my-subnet-group"
+  description = "My subnet group"
+  subnet_ids  = [data.aws_subnet.my_subnet_list[0].id, data.aws_subnet.my_subnet_list[1].id]
 }
 
 
@@ -31,7 +26,7 @@ resource "aws_db_instance" "myrds" {
   #final_snapshot_identifier = 
   skip_final_snapshot   = true
   #multi_az = false
-  #db_subnet_group_name  = aws_db_subnet_group.my_subnet_group.id
+  db_subnet_group_name  = aws_db_subnet_group.my_subnet_group.id
   # vpc_security_group_ids = [aws_security_group.db.id]
 }
 

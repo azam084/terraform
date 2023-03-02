@@ -31,6 +31,8 @@ module "vpc" {
   egress_cidr_blocks           = var.egress_cidr_blocks
   ingress_cidr_blocks          = var.ingress_cidr_blocks
 }
+
+
 module "rds" {
   depends_on = [module.vpc]
   source                = "../../modules/rds"
