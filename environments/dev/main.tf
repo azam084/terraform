@@ -1,4 +1,13 @@
 # Configure Provider
+terraform {
+  backend "s3" {
+    bucket = "terrastate.danat"
+    key    = "dev"
+    region = "eu-west-1"
+    profile = "DanatTest"
+  }
+}
+
 
 provider "aws" {
   region  = var.region
@@ -23,6 +32,7 @@ module "vpc" {
   ingress_cidr_blocks          = var.ingress_cidr_blocks
 }
 module "rds" {
+  depends_on = [module.vpc]
   source                = "../../modules/rds"
   db_engine             = var.db_engine
   db_engine_version     = var.db_engine_version

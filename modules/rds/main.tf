@@ -1,20 +1,22 @@
-# data "aws_subnet" "my_subnet_list" {
-#  tags = {
-#     Name = "private data subnet az1"
-#     Name = "private app subnet az2"
-#   }
-# }
+data "aws_subnet" "my_subnet_list" {
+ tags = {
+    sidg = "RDS_Subnet"
+  }
+}
 
 
-# # Create the DB subnet group 
-# resource "aws_db_subnet_group" "my_subnet_group"{
-#   #subnet_ids = data.aws_subnet.my_subnet_list.id
-#   subnet_ids = [data.aws_subnet.my_subnet_list]
-#   #subnet_ids = flatten([data.aws_subnet.my_subnet_list.*.id])
-#   # tags = {
-#   #   Name = "${var.project_name}-Subnet Group"
-#   # }
-# }
+
+# Create the DB subnet group 
+resource "aws_db_subnet_group" "my_subnet_group"{
+  for_each = data.aws_subnet.my_subnet_list.id
+  subnet_ids = each.value
+  #subnet_ids = data.aws_subnet.my_subnet_list.id
+  #subnet_ids = [data.aws_subnet.my_subnet_list]
+  #subnet_ids = flatten([data.aws_subnet.my_subnet_list.*.id])
+  # tags = {
+  #   Name = "${var.project_name}-Subnet Group"
+  # }
+}
 
 
 # create RDS 
