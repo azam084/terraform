@@ -26,9 +26,9 @@ module "rds" {
   source                = "../../modules/rds"
   db_engine             = var.db_engine
   db_engine_version     = var.db_engine_version
-  # instance_class        = var.mydb_ic
+  #instance_class        = var.mydb_ic
   # username              = "foo"
   # password              = "foobarbaz"
-  # skip_final_snapshot   = false
+  #skip_final_snapshot   = false
   #db_subnet_group_name  = module.vpc.my_subnet_group
 }

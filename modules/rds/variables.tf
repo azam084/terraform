@@ -19,12 +19,13 @@ variable "db_engine_version" {
     default = "5.7"
 }
 
-variable "mydb_ic" {
-        type = string
-        default = ""
+# variable "mydb_ic" {
+#         type = string
+#         default = ""
+# }
+
+variable "subnet_ids" {
+        type = list
+        default = []
 }
 
-# variable "subnet_ids" {
-#         type = list
-#         default = []
-# }
