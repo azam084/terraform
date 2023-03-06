@@ -1,0 +1,3 @@
+resource "aw" "name" {
+  
+}
