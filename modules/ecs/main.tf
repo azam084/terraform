@@ -1,3 +1,3 @@
-resource "aw" "name" {
+resource "aw" "myec2" {
   
 }
