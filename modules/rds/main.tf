@@ -8,7 +8,7 @@ data "aws_subnet" "my_subnet_list" {
     }
 }
 
-# Create subnet group in RDS 
+# Create subnet group in RDS
 resource "aws_db_subnet_group" "my_subnet_group"{
     name              = "my-subnet-group"
     description       = "My subnet group"
