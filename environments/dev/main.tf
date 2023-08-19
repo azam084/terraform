@@ -45,3 +45,8 @@ module "vpc" {
   #skip_final_snapshot   = false
   #db_subnet_group_name  = module.vpc.my_subnet_group
 } */
+
+module "ecs" {
+  source = "../../modules/ecs"
+  
+}
