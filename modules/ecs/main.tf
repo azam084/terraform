@@ -1,8 +1,3 @@
-# Using data source fetching subnet that has custom tag in your VPC
-data "aws_subnet" "my_subnet_listecs" {
-    count             = 2
-    availability_zone = "eu-west-1${element(["a", "b"], count.index)}"
-}
 
 resource "aws_ecs_cluster" "demo_ecs" {
   name = "azam-ecs"
