@@ -1,3 +1,11 @@
+# Using data source fetching subnet that has custom tag in your VPC
+data "aws_subnet" "ecs_subnet" {
+    count             = 2
+    availability_zone = "eu-west-1${element(["a", "b"], count.index)}"
+    tags              = {
+      sidg            = "RDS_Subnet"
+    }
+}
 
 resource "aws_ecs_cluster" "demo_ecs" {
   name = "azam-ecs"
@@ -39,7 +47,8 @@ resource "aws_ecs_service" "my_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets = [data.aws_subnet.my_subnet_listecs[0].id, data.aws_subnet.my_subnet_listecs[1].id]
+    subnets = [data.aws_subnet.ecs_subnet[0].id, data.aws_subnet.ecs_subnet[1].id]
+    assign_public_ip = true
     #security_groups = [aws_security_group.ecs_security_group.id]
   }
 }
