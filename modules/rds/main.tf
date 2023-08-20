@@ -22,10 +22,11 @@ resource "aws_db_instance" "myrds" {
   db_name               = var.mydb_name
   engine                = var.db_engine
   engine_version        = var.db_engine_version
-  instance_class        = "db.m5.large"
+  instance_class        = "db.t3.micro"
   username              = "foo"
   password              = "foobarbaz"
   skip_final_snapshot   = true
+  identifier            = "dev-demo-rds"
   db_subnet_group_name  = aws_db_subnet_group.my_subnet_group.id
 }
 

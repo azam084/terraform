@@ -7,6 +7,12 @@ data "aws_subnet" "ecs_subnet" {
     }
 }
 
+data "aws_security_group" "ecs_sg" {
+      tags              = {
+      Name            = "EC2_SECURITY_GROUP"
+    }
+}
+
 resource "aws_ecs_cluster" "demo_ecs" {
   name = "azam-ecs"
 
@@ -46,5 +52,10 @@ resource "aws_ecs_service" "my_service" {
   network_configuration {
     subnets = [data.aws_subnet.ecs_subnet[0].id, data.aws_subnet.ecs_subnet[1].id]
     assign_public_ip = true
+    security_groups = [data.aws_security_group.ecs_sg.id]
+  }
+
+  lifecycle {
+    ignore_changes = [desired_count]
   }
 }

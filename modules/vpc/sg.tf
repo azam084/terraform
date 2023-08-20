@@ -7,7 +7,6 @@
 
 resource "aws_security_group" "ec2_sg" {
     description = "Security Group for EC2 Instance"
-    name = var.sg_name
     vpc_id = aws_vpc.vpc.id
     #vpc_id = module.vpc.aws_vpc.vpc.id
     #vpc_id = "${vpc.aws_vpc.vpc.id}"

@@ -30,11 +30,11 @@ module "vpc" {
   private_data_subnet_az2_cidr = var.private_data_subnet_az2_cidr
   sg_name                      = var.sg_name
   egress_cidr_blocks           = var.egress_cidr_blocks
-  ingress_cidr_blocks          = var.ingress_cidr_blocks
+  ingress_cidr_blocks          = var.ingress_cidr_blocks 
 }
 
 
-/* module "rds" {
+module "rds" {
   depends_on = [module.vpc]
   source                = "../../modules/rds"
   db_engine             = var.db_engine
@@ -44,9 +44,9 @@ module "vpc" {
   # password              = "foobarbaz"
   #skip_final_snapshot   = false
   #db_subnet_group_name  = module.vpc.my_subnet_group
-} */
+}
 
 module "ecs" {
   source = "../../modules/ecs"
   
-}
+} 
