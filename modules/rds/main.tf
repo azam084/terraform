@@ -3,9 +3,7 @@
 data "aws_subnet" "my_subnet_list" {
     count             = 2
     availability_zone = "eu-west-1${element(["a", "b"], count.index)}"
-    tags              = {
-      sidg            = "RDS_Subnet"
-    }
+    tags              = {sidg = "RDS_Subnet"}
 }
 
 # Create subnet group in RDS

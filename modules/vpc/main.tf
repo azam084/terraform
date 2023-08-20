@@ -126,3 +126,15 @@ resource "aws_subnet" "private_data_subnet_az2" {
   }
 }
 
+# create a nat gateway
+resource "aws_nat_gateway" "example" {
+  subnet_id     = aws_subnet.public_subnet_az1.id
+  allocation_id = [eip.aws_eip.nat-gw-ip]
+  tags = {
+    Name = "NAT_GW"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.internet_gateway]
+}
