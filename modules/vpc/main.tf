@@ -31,6 +31,7 @@ resource "aws_subnet" "public_subnet_az1" {
 
   tags      = {
     Name    = "public subnet az1"
+    sidg    = "public_Subnet"
   }
 }
 
@@ -43,6 +44,7 @@ resource "aws_subnet" "public_subnet_az2" {
 
   tags      = {
     Name    = "public subnet az2"
+    sidg    = "public_Subnet"
   }
 }
 

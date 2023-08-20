@@ -3,7 +3,7 @@ data "aws_subnet" "ecs_subnet" {
     count             = 2
     availability_zone = "eu-west-1${element(["a", "b"], count.index)}"
     tags              = {
-      sidg            = "RDS_Subnet"
+      sidg            = "public_Subnet"
     }
 }
 
@@ -22,20 +22,16 @@ resource "aws_ecs_task_definition" "demo_task_def" {
   network_mode             = "awsvpc"
   cpu                      = 1024
   memory                   = 2048
-  container_definitions    = <<TASK_DEFINITION
-[
-  {
-    "name": "iis",
-    "image": "mcr.microsoft.com/windows/servercore/iis",
-    "cpu": 1024,
-    "memory": 2048,
+  container_definitions    = jsonencode([{
+    "name": "nginx",
+    "image": "nginx:latest",  # Use the latest version of nginx image
+    "cpu": 256,               # Adjust as needed
+    "memory": 512,            # Adjust as needed
     "essential": true
-  }
-]
-TASK_DEFINITION
+  }])
 
   runtime_platform {
-    operating_system_family = "WINDOWS_SERVER_2019_CORE"
+    operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"
   }
 }
@@ -45,10 +41,10 @@ resource "aws_ecs_service" "my_service" {
   cluster         = aws_ecs_cluster.demo_ecs.id
   task_definition = aws_ecs_task_definition.demo_task_def.arn
   launch_type     = "FARGATE"
+  desired_count   = 2
 
   network_configuration {
     subnets = [data.aws_subnet.ecs_subnet[0].id, data.aws_subnet.ecs_subnet[1].id]
     assign_public_ip = true
-    #security_groups = [aws_security_group.ecs_security_group.id]
   }
 }
