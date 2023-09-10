@@ -1,5 +1,5 @@
-resource "aws_eip" "nat-gw-ip" {
-        tags = {
-            Name = "NATEIP"
-        }
-}
+# resource "aws_eip" "nat-gw-ip" {
+#         tags = {
+#             Name = "NATEIP"
+#         }
+# }

@@ -1,4 +1,3 @@
-# Using data source fetching subnet that has custom tag in your VPC
 data "aws_subnet" "ecs_subnet" {
     count             = 2
     availability_zone = "eu-west-1${element(["a", "b"], count.index)}"
@@ -13,17 +12,27 @@ data "aws_security_group" "ecs_sg" {
     }
 }
 
+data "aws_lb_target_group" "demo_ecs_target_group" {
+    tags      = {
+    name    = "ecs-alb-target-group"
+  }
+  }
+
+
 resource "aws_ecs_cluster" "demo_ecs" {
-  name = "azam-ecs"
+  name = var.ecs_cluster_name
 
   setting {
     name  = "containerInsights"
     value = "enabled"
   }
+    tags = {
+    name = "demo-ecs-cluster"
+  }
 }
 
 resource "aws_ecs_task_definition" "demo_task_def" {
-  family                   = "demo"
+  family                   = "demo_ecs"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 1024
@@ -34,6 +43,11 @@ resource "aws_ecs_task_definition" "demo_task_def" {
     "cpu": 256,               # Adjust as needed
     "memory": 512,            # Adjust as needed
     "essential": true
+          "portMappings": [
+            {
+              "containerPort": 80,
+              }
+          ]
   }])
 
   runtime_platform {
@@ -43,7 +57,7 @@ resource "aws_ecs_task_definition" "demo_task_def" {
 }
 
 resource "aws_ecs_service" "my_service" {
-  name            = "demo-ecs-service"
+  name            = var.ecs_service_name
   cluster         = aws_ecs_cluster.demo_ecs.id
   task_definition = aws_ecs_task_definition.demo_task_def.arn
   launch_type     = "FARGATE"
@@ -55,7 +69,88 @@ resource "aws_ecs_service" "my_service" {
     security_groups = [data.aws_security_group.ecs_sg.id]
   }
 
+  load_balancer {
+    target_group_arn = data.aws_lb_target_group.demo_ecs_target_group.arn
+    container_name   = "nginx"
+    container_port   = 80
+  }
+
   lifecycle {
     ignore_changes = [desired_count]
   }
+
+  tags = {
+    name = "demo-ecs-service"
+  }
 }
+
+resource "aws_cloudwatch_metric_alarm" "ecs_cpu_alarm" {
+  alarm_name          = "ecs-cpu-scaling-alarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods = 2
+  metric_name        = "CPUUtilization"
+  namespace          = "AWS/ECS"
+  period             = 60
+  statistic          = "Maximum"
+  threshold           = 1 # Adjust this threshold as needed
+  alarm_description  = "Scale ECS service up based on CPU"
+  #alarm_actions      = [aws_autoscaling_policy.ecs_scaling_policy.arn]
+  dimensions = {
+    ServiceName = aws_ecs_service.my_service.name
+  }
+}
+
+resource "aws_appautoscaling_policy" "ecs_scaling_policy" {
+  name               = "ecs-cpu-scaling-policy"
+  policy_type        = "StepScaling"
+  resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 300 # Adjust this cooldown period as needed
+    metric_aggregation_type = "Maximum"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = 1 # Increase desired count by 1 when CPU exceeds threshold
+    }
+  }
+}
+
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity       = 4
+  min_capacity       = 1
+  resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+
+# resource "aws_appautoscaling_target" "ecs_target" {
+#   max_capacity       = 4
+#   min_capacity       = 1
+#   resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
+#   scalable_dimension = "ecs:service:DesiredCount"
+#   service_namespace  = "ecs"
+# }
+
+# resource "aws_appautoscaling_policy" "ecs_policy" {
+#   name               = "scale-down"
+#   policy_type        = "StepScaling"
+#   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+#   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+#   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+#   step_scaling_policy_configuration {
+#     adjustment_type         = "ChangeInCapacity"
+#     cooldown                = 60
+#     metric_aggregation_type = "Maximum"
+
+#     step_adjustment {
+#       metric_interval_upper_bound = 0
+#       scaling_adjustment          = -1
+#     }
+#   }
+# }

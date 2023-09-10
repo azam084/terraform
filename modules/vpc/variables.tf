@@ -14,3 +14,4 @@ variable "ingress_cidr_blocks" {}
 variable "egress_cidr_blocks" {}
 variable "sg_name" {}
 
+# ELB variables
