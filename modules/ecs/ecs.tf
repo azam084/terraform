@@ -84,40 +84,21 @@ resource "aws_ecs_service" "my_service" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "ecs_cpu_alarm" {
-  alarm_name          = "ecs-cpu-scaling-alarm"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods = 2
-  metric_name        = "CPUUtilization"
-  namespace          = "AWS/ECS"
-  period             = 60
-  statistic          = "Maximum"
-  threshold           = 1 # Adjust this threshold as needed
-  alarm_description  = "Scale ECS service up based on CPU"
-  #alarm_actions      = [aws_autoscaling_policy.ecs_scaling_policy.arn]
-  dimensions = {
-    ServiceName = aws_ecs_service.my_service.name
-  }
-}
-
-resource "aws_appautoscaling_policy" "ecs_scaling_policy" {
-  name               = "ecs-cpu-scaling-policy"
-  policy_type        = "StepScaling"
-  resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
-  scalable_dimension = "ecs:service:DesiredCount"
-  service_namespace  = "ecs"
-
-  step_scaling_policy_configuration {
-    adjustment_type         = "ChangeInCapacity"
-    cooldown                = 300 # Adjust this cooldown period as needed
-    metric_aggregation_type = "Maximum"
-
-    step_adjustment {
-      metric_interval_upper_bound = 0
-      scaling_adjustment          = 1 # Increase desired count by 1 when CPU exceeds threshold
-    }
-  }
-}
+# resource "aws_cloudwatch_metric_alarm" "ecs_cpu_alarm" {
+#   alarm_name          = "ecs-cpu-scaling-alarm"
+#   comparison_operator = "GreaterThanOrEqualToThreshold"
+#   evaluation_periods = 2
+#   metric_name        = "CPUUtilization"
+#   namespace          = "AWS/ECS"
+#   period             = 60
+#   statistic          = "Maximum"
+#   threshold           = 1 # Adjust this threshold as needed
+#   alarm_description  = "Scale ECS service up based on CPU"
+#   #alarm_actions      = [aws_autoscaling_policy.ecs_scaling_policy.arn]
+#   dimensions = {
+#     ServiceName = aws_ecs_service.my_service.name
+#   }
+# }
 
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 4
@@ -127,30 +108,34 @@ resource "aws_appautoscaling_target" "ecs_target" {
   service_namespace  = "ecs"
 }
 
+resource "aws_appautoscaling_policy" "dev_to_cpu" {
+  name = "dev-to-cpu"
+  policy_type = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
-# resource "aws_appautoscaling_target" "ecs_target" {
-#   max_capacity       = 4
-#   min_capacity       = 1
-#   resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
-#   scalable_dimension = "ecs:service:DesiredCount"
-#   service_namespace  = "ecs"
-# }
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
 
-# resource "aws_appautoscaling_policy" "ecs_policy" {
-#   name               = "scale-down"
-#   policy_type        = "StepScaling"
-#   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
-#   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
-#   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+    target_value = 1
+  }
+}
 
-#   step_scaling_policy_configuration {
-#     adjustment_type         = "ChangeInCapacity"
-#     cooldown                = 60
-#     metric_aggregation_type = "Maximum"
+resource "aws_appautoscaling_policy" "dev_to_memory" {
+  name               = "dev-to-memory"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
-#     step_adjustment {
-#       metric_interval_upper_bound = 0
-#       scaling_adjustment          = -1
-#     }
-#   }
-# }
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+
+    target_value       = 80
+  }
+}
