@@ -46,7 +46,7 @@ module "vpc" {
   #db_subnet_group_name       = module.vpc.my_subnet_group
 } */
 
-# module "ecs" {
-#   depends_on                  = [module.vpc]
-#   source                      = "../../modules/ecs"
-# }  
+module "ecs" {
+  depends_on                  = [module.vpc]
+  source                      = "../../modules/ecs"
+}  
