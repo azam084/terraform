@@ -8,3 +8,7 @@ variable "ecs_service_name" {
   default = "demo-ecs-service"
 }
 
+variable "task_count" {
+    type = number
+    default = "2"
+}

@@ -37,16 +37,16 @@ module "vpc" {
 /* module "rds" {
   depends_on                  = [module.vpc]
   source                      = "../../modules/rds"
+  allocated_storage           = var.allocated_storage
+  mydb_name                   = var.mydb_name
   db_engine                   = var.db_engine
   db_engine_version           = var.db_engine_version
-  #instance_class             = var.mydb_ic
-  # username                  = "foo"
-  # password                  = "foobarbaz"
-  #skip_final_snapshot        = false
-  #db_subnet_group_name       = module.vpc.my_subnet_group
-} */
+  instance_class              = var.instance_class
+  username                    = var.username
+  password                    = var.password
+}
 
-# module "ecs" {
-#   depends_on                  = [module.vpc]
-#   source                      = "../../modules/ecs"
-# }  
+module "ecs" {
+  depends_on                  = [module.vpc, module.rds]
+  source                      = "../../modules/ecs"
+}   */

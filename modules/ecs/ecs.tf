@@ -38,16 +38,16 @@ resource "aws_ecs_task_definition" "demo_task_def" {
   cpu                      = 1024
   memory                   = 2048
   container_definitions    = jsonencode([{
-    "name": "nginx",
-    "image": "nginx:latest",  # Use the latest version of nginx image
+    "name": "my-flask-app",  # Name of your container
+    "image": "azam084/my-flask-app:latest",  # Use your Docker Hub image
     "cpu": 256,               # Adjust as needed
     "memory": 512,            # Adjust as needed
-    "essential": true
-          "portMappings": [
-            {
-              "containerPort": 80,
-              }
-          ]
+    "essential": true,
+    "portMappings": [
+      {
+        "containerPort": 80,
+      }
+    ]
   }])
 
   runtime_platform {
@@ -57,11 +57,12 @@ resource "aws_ecs_task_definition" "demo_task_def" {
 }
 
 resource "aws_ecs_service" "my_service" {
+  depends_on = [aws_ecs_task_definition.demo_task_def]
   name            = var.ecs_service_name
   cluster         = aws_ecs_cluster.demo_ecs.id
   task_definition = aws_ecs_task_definition.demo_task_def.arn
   launch_type     = "FARGATE"
-  desired_count   = 2
+  desired_count   = var.task_count
 
   network_configuration {
     subnets = [data.aws_subnet.ecs_subnet[0].id, data.aws_subnet.ecs_subnet[1].id]
@@ -71,7 +72,7 @@ resource "aws_ecs_service" "my_service" {
 
   load_balancer {
     target_group_arn = data.aws_lb_target_group.demo_ecs_target_group.arn
-    container_name   = "nginx"
+    container_name   = "my-flask-app"  # Use the correct container name
     container_port   = 80
   }
 
@@ -94,13 +95,13 @@ resource "aws_cloudwatch_metric_alarm" "ecs_cpu_alarm" {
   statistic          = "Maximum"
   threshold           = 1 # Adjust this threshold as needed
   alarm_description  = "Scale ECS service up based on CPU"
-  #alarm_actions      = [aws_autoscaling_policy.ecs_scaling_policy.arn]
   dimensions = {
     ServiceName = aws_ecs_service.my_service.name
   }
 }
 
 resource "aws_appautoscaling_policy" "ecs_scaling_policy" {
+  depends_on         = [aws_ecs_service.my_service]
   name               = "ecs-cpu-scaling-policy"
   policy_type        = "StepScaling"
   resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
@@ -121,36 +122,9 @@ resource "aws_appautoscaling_policy" "ecs_scaling_policy" {
 
 resource "aws_appautoscaling_target" "ecs_target" {
   max_capacity       = 4
-  min_capacity       = 1
+  min_capacity       = 2
   resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
-
-# resource "aws_appautoscaling_target" "ecs_target" {
-#   max_capacity       = 4
-#   min_capacity       = 1
-#   resource_id        = "service/${var.ecs_cluster_name}/${var.ecs_service_name}"
-#   scalable_dimension = "ecs:service:DesiredCount"
-#   service_namespace  = "ecs"
-# }
-
-# resource "aws_appautoscaling_policy" "ecs_policy" {
-#   name               = "scale-down"
-#   policy_type        = "StepScaling"
-#   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
-#   scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
-#   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
-
-#   step_scaling_policy_configuration {
-#     adjustment_type         = "ChangeInCapacity"
-#     cooldown                = 60
-#     metric_aggregation_type = "Maximum"
-
-#     step_adjustment {
-#       metric_interval_upper_bound = 0
-#       scaling_adjustment          = -1
-#     }
-#   }
-# }

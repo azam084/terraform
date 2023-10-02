@@ -16,16 +16,16 @@ variable "sg_name" {}
 # Below variable are for RDS
 
 
-# variable "allocated_storage" {
-#     type = number
-#     default = "10"
+variable "allocated_storage" {
+    type = number
+    default = "10"
 
-# }
+}
 
-# variable "mydb_name" {
-#     type = string
-#     default = ""
-# }
+variable "mydb_name" {
+    type = string
+    default = ""
+}
 
 variable "db_engine" {
     type = string
@@ -37,8 +37,50 @@ variable "db_engine_version" {
     default = "5.7"
 }
 
-# variable "mydb_ic" {
-#         type = string
-#         default = ""
-# }
+variable "instance_class" {
+    type        = string
+    default     = "db.t3.micro"
+}
 
+variable "username" {
+    type        = string
+    default     = "foo"
+}
+
+variable "password" {
+    type        = string
+    default     = "foobarbaz"
+}
+
+
+# Below variable are for ECS
+
+/* variable "ecs_cluster_name" {
+  description = "dev-ecs"
+  default = "dev-ecs"
+}
+
+variable "ecs_service_name" {
+  description = "demo-ecs-service"
+  default = "demo-ecs-service"
+}
+
+variable "task_count" {
+    type = number
+    default = "2"
+}
+
+variable "container_cpu" {
+    type = number
+    default = "256"
+}
+
+variable "container_memory" {
+    type = number
+    default = "512"
+}
+
+variable "container_image" {
+    type = string
+    default = "myazam084/my-flask-app:latest"
+} */
