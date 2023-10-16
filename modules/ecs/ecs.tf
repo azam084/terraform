@@ -18,6 +18,11 @@ data "aws_lb_target_group" "demo_ecs_target_group" {
   }
   }
 
+/* data "aws_db_instance" "rdsdb" {
+filter {
+    name   = "tag:name"  # Replace with your actual tag name
+    values = ["RDS-DB"]   # Replace with your actual tag value
+  }} */
 
 resource "aws_ecs_cluster" "demo_ecs" {
   name = var.ecs_cluster_name
@@ -49,11 +54,6 @@ resource "aws_ecs_task_definition" "demo_task_def" {
       }
     ]
   }])
-
-  runtime_platform {
-    operating_system_family = "LINUX"
-    cpu_architecture        = "X86_64"
-  }
 }
 
 resource "aws_ecs_service" "my_service" {

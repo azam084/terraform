@@ -34,7 +34,7 @@ module "vpc" {
 }
 
 
-/* module "rds" {
+module "rds" {
   depends_on                  = [module.vpc]
   source                      = "../../modules/rds"
   allocated_storage           = var.allocated_storage
@@ -49,4 +49,4 @@ module "vpc" {
 module "ecs" {
   depends_on                  = [module.vpc, module.rds]
   source                      = "../../modules/ecs"
-}   */
+}  

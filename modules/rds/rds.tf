@@ -33,6 +33,7 @@ resource "aws_db_instance" "myrds" {
   db_subnet_group_name  = aws_db_subnet_group.my_subnet_group.id
   vpc_security_group_ids = [data.aws_security_group.rds_sg.id]
   publicly_accessible   = true
+  tags                  = {name = "RDS-DB"}
 }
 
 
